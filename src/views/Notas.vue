@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <h1>Notas</h1>
     <!-- Alerta -->
     <b-alert
       :show="dismissCountDown"
@@ -11,8 +12,15 @@
       {{mensaje.texto}}
     </b-alert>
 
+    <!-- Formulario Agregar Nota -->
+    <form @submit.prevent="agregarNota()">
+      <h3>Agregar nueva nota</h3>
+      <input type="text" class="form-control my-2" placeholder="Nombre" v-model="nota.nombre">
+      <input type="text" class="form-control my-2" placeholder="Descripción" v-model="nota.descripcion">
+      <b-button class="btn-success my-2 btn-block" type="submit">Agregar</b-button>
+    </form>
+    
     <!-- Tabla -->
-    <h1>Notas</h1>
     <table class="table">
       <thead>
         <tr>
@@ -45,7 +53,8 @@ export default {
       notas: [],
       mensaje: {color: '', texto: ''},
       dismissSecs: 5,
-      dismissCountDown: 0,  
+      dismissCountDown: 0,
+      nota: { nombre: '', descripcion: ''}
     }
   },
   created() {
@@ -67,6 +76,27 @@ export default {
     },
     showAlert() {
       this.dismissCountDown = this.dismissSecs
+    },
+    agregarNota(){
+      this.axios.post('/nueva-nota', this.nota)
+        .then(res => {
+          this.notas.push(res.data);
+          this.nota.nombre = '';
+          this.nota.descripcion = '';
+          this.mensaje.color = 'success';
+          this.mensaje.texto = 'Nota agregada!';
+          this.showAlert();
+        })
+        .catch(e => {
+          console.log(e.response);
+          if (e.response.data.error.errors.nombre.message) {
+            this.mensaje.texto = e.response.data.error.errors.nombre.message;
+          } else {
+            this.mensaje.texto = 'Error de sistema';
+          }
+          this.mensaje.color = 'danger';
+          this.showAlert();
+        })
     },
     alerta(){
       this.mensaje.color = 'success';
