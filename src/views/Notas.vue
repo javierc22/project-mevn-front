@@ -1,5 +1,17 @@
 <template>
   <div class="container">
+    <!-- Alerta -->
+    <b-alert
+      :show="dismissCountDown"
+      dismissible
+      :variant="mensaje.color"
+      @dismissed="dismissCountDown=0"
+      @dismiss-count-down="countDownChanged"
+    >
+      {{mensaje.texto}}
+    </b-alert>
+
+    <!-- Tabla -->
     <h1>Notas</h1>
     <table class="table">
       <thead>
@@ -18,6 +30,7 @@
           <td>{{ item.descripcion }}</td>
           <td>{{ item.date }}</td>
           <td>
+            <b-button @click="alerta()">Acción</b-button>
           </td>
         </tr>
       </tbody>
@@ -29,7 +42,10 @@
 export default {
   data() {
     return {
-      notas: [],  
+      notas: [],
+      mensaje: {color: '', texto: ''},
+      dismissSecs: 5,
+      dismissCountDown: 0,  
     }
   },
   created() {
@@ -39,12 +55,23 @@ export default {
     listarNotas(){
       this.axios.get('/notas')
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.notas = res.data;
         })
         .catch(e => {
           console.log(e.response);
         })
+    },
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
+    },
+    showAlert() {
+      this.dismissCountDown = this.dismissSecs
+    },
+    alerta(){
+      this.mensaje.color = 'success';
+      this.mensaje.texto = 'Probando alerta...';
+      this.showAlert();
     }
   },
 }
