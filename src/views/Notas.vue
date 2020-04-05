@@ -38,7 +38,13 @@
           <td>{{ item.descripcion }}</td>
           <td>{{ item.date }}</td>
           <td>
-            <b-button @click="alerta()">Acción</b-button>
+            <!-- <b-button @click="alerta()">Acción</b-button> -->
+            <b-button 
+              class="btn-danger" 
+              @click="eliminarNota(item._id)"
+            >
+              Eliminar
+            </b-button>
           </td>
         </tr>
       </tbody>
@@ -96,6 +102,19 @@ export default {
           }
           this.mensaje.color = 'danger';
           this.showAlert();
+        })
+    },
+    eliminarNota(id){
+      this.axios.delete(`/nota/${id}`)
+        .then(res => {
+          const index = this.notas.findIndex( item => item._id === res.data._id);
+          this.notas.splice(index, 1);
+          this.mensaje.color = 'success';
+          this.mensaje.texto = 'Nota eliminada!';
+          this.showAlert();
+        })
+        .catch(e => {
+          console.log(e.response);
         })
     },
     alerta(){
