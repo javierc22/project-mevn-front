@@ -19,7 +19,12 @@ Vue.use(VueRouter)
     path: '/notas',
     name: 'notas',
     component: () => import('../views/Notas.vue')
-  }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/Login.vue')
+  },
 ]
 
 const router = new VueRouter({
