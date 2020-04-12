@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   data() {
     return {
@@ -24,11 +26,14 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['guardarUsuario']),
     login() {
       // console.log(this.usuario);
       this.axios.post('/login', this.usuario)
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
+          const token = res.data.token;
+          this.guardarUsuario(token);
         })
         .catch(e => {
           console.log(e.response);
