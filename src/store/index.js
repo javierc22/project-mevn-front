@@ -26,7 +26,16 @@ export default new Vuex.Store({
     guardarUsuario({ commit }, payload){
       localStorage.setItem('token', payload);
       commit('obtenerUsuario', payload);
+    },
+    cerrarSesion({ commit }){
+      commit('obtenerUsuario', '');
+      localStorage.removeItem('token');
+      router.push({ name: 'login' });
     }
+  },
+  getters: {
+    // retorna un 'true' si existe el token
+    estaActivo: state => !!state.token
   },
   modules: {
   }
