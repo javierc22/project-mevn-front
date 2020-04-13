@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -77,9 +79,19 @@ export default {
   created() {
     this.listarNotas();
   },
+  computed: {
+    ...mapState(['token']),
+  },
   methods: {
     listarNotas(){
-      this.axios.get('/notas')
+      // Agregando token a los headers
+      let config = {
+        headers: {
+          token: this.token
+        }
+      }
+
+      this.axios.get('/notas', config)
         .then(res => {
           // console.log(res.data);
           this.notas = res.data;
