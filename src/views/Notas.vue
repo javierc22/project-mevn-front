@@ -107,7 +107,14 @@ export default {
       this.dismissCountDown = this.dismissSecs
     },
     agregarNota(){
-      this.axios.post('/nueva-nota', this.nota)
+      // Agregando token a los headers
+      let config = {
+        headers: {
+          token: this.token
+        }
+      }
+
+      this.axios.post('/nueva-nota', this.nota, config)
         .then(res => {
           this.notas.push(res.data);
           this.nota.nombre = '';
