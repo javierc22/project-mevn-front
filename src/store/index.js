@@ -31,6 +31,14 @@ export default new Vuex.Store({
       commit('obtenerUsuario', '');
       localStorage.removeItem('token');
       router.push({ name: 'login' });
+    },
+    leerToken({ commit }){
+      const token = localStorage.getItem('token');
+      if (token) {
+        commit('obtenerUsuario', token);
+      } else {
+        commit('obtenerUsuario', '');
+      }
     }
   },
   getters: {

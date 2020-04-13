@@ -16,10 +16,13 @@ import { mapActions, mapGetters } from "vuex";
 
 export default {
   methods: {
-    ...mapActions(['cerrarSesion']),
+    ...mapActions(['cerrarSesion', 'leerToken']),
   },
   computed: {
     ...mapGetters(['estaActivo']),
+  },
+  created() {
+    this.leerToken();
   },
 }
 </script>
