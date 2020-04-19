@@ -67,6 +67,9 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
+      totalNotas: 0,
+      limite: 5,
+      paginaActual: 1,
       notas: [],
       mensaje: {color: '', texto: ''},
       dismissSecs: 5,
@@ -76,13 +79,42 @@ export default {
       notaEditar: {},
     }
   },
-  created() {
-    this.listarNotas();
+  // created() {
+  //   this.listarNotas();
+  // },
+  watch: {
+    "$route.query.pagina": {
+      inmediate: true,
+      handler(pagina){
+        pagina = parseInt(pagina) || 1;
+        this.paginacion(pagina);
+        this.paginaActual = pagina;
+      }
+    }
   },
   computed: {
     ...mapState(['token']),
   },
   methods: {
+    paginacion(pagina){
+      // Agregando token a los headers
+      let config = {
+        headers: {
+          token: this.token
+        }
+      }
+
+      let skip = (pagina - 1) * this.limite;
+
+      this.axios.get(`/notas?limite=${limite}&skip=${skip}`, config)
+        .then(res => {
+          this.notas = res.data.notaDB;
+          this.totalNotas = res.data.totalNotas;
+        })
+        .catch( e => {
+          console.log(e.response);
+        })
+    },
     listarNotas(){
       // Agregando token a los headers
       let config = {
@@ -94,7 +126,7 @@ export default {
       this.axios.get('/notas', config)
         .then(res => {
           // console.log(res.data);
-          this.notas = res.data;
+          this.notas = res.data.notaDB;
         })
         .catch(e => {
           console.log(e.response);
