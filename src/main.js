@@ -13,7 +13,9 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.use(VueAxios, axios)
 // Agregamos la URL base de nuestra API
-axios.defaults.baseURL = 'http://localhost:3000/api';
+// axios.defaults.baseURL = 'http://localhost:3000/api';
+// Base URL para producción
+axios.defaults.baseURL = 'https://project-mevn.herokuapp.com/api';
 
 Vue.config.productionTip = false
 
