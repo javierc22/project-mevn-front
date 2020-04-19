@@ -58,6 +58,24 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Paginación -->
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item" :class="{'disabled': paginaActual === 1}">
+          <router-link class="page-link" :to="{ query: { pagina: paginaActual - 1 }}">Anterior</router-link>
+        </li>
+        <li class="page-item" :class="{'active':paginaActual === index + 1}"
+        v-for="(item, index) in cantidadPaginas" :key="index">
+          <router-link :to="{ query: { pagina: index + 1 }}" class="page-link">{{index + 1}}</router-link>
+        </li>
+        <li class="page-item" :class="{'disabled': paginaActual === cantidadPaginas}">
+          <router-link class="page-link" :to="{ query: { pagina: paginaActual + 1 }}">Siguiente</router-link>
+        </li>
+      </ul>
+    </nav>
+
+    <p>Total notas: {{totalNotas}} - Cantidad de páginas: {{cantidadPaginas}}</p>
   </div>
 </template>
 
@@ -84,36 +102,38 @@ export default {
   // },
   watch: {
     "$route.query.pagina": {
-      inmediate: true,
-      handler(pagina){
+      immediate: true,
+      handler(pagina) {
         pagina = parseInt(pagina) || 1;
         this.paginacion(pagina);
-        this.paginaActual = pagina;
+        this.paginaActual = pagina
       }
     }
   },
   computed: {
-    ...mapState(['token']),
+    ...mapState(["token"]),
+    cantidadPaginas() {
+      return Math.ceil(this.totalNotas / this.limite);
+    }
   },
   methods: {
-    paginacion(pagina){
-      // Agregando token a los headers
+    paginacion(pagina) {
       let config = {
         headers: {
           token: this.token
         }
-      }
-
+      };
       let skip = (pagina - 1) * this.limite;
-
-      this.axios.get(`/notas?limite=${limite}&skip=${skip}`, config)
+      this.axios
+        .get(`/notas?skip=${skip}&limit=${this.limite}`, config)
         .then(res => {
-          this.notas = res.data.notaDB;
+          // console.log(res.data.notasDB);
+          this.notas = res.data.notasDB;
           this.totalNotas = res.data.totalNotas;
         })
-        .catch( e => {
+        .catch(e => {
           console.log(e.response);
-        })
+        });
     },
     listarNotas(){
       // Agregando token a los headers
